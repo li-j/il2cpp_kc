@@ -24,11 +24,11 @@ void *PromiseAntiencryption(void *src, int64_t len)
     char *cp_src = (char *)src; // 以字节流形式访问文件内存buffer
     const int safe_size = 1024; // 安全区大小
     // 机密区首四个字节低十六位为加密密文数组长度
-    unsigned int *ip_mask = (unsigned int *)(cp_src + safe_size);
+    unsigned int *ip_mask = (unsigned int *)(cp_src + safe_size + sizeof(uint32_t));
     // 获取加密区掩码数组长度
     int kl = (int)((*ip_mask) & 0xffff);
     // 获取加密代码长度
-    const int64_t code_segment_size = len - sizeof(uint32_t) * (kl + 1);
+    const int64_t code_segment_size = len - sizeof(uint32_t) * (kl + 2);
     const int64_t code_encryption_size = code_segment_size - safe_size;
     // 计算真实代码的内存映射长度并申请一块新的内存块
     char *buffer = (char *)malloc(code_segment_size);
